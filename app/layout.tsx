@@ -3,6 +3,8 @@ import "./globals.css";
 import QueryProvider from "../components/QueryProvider";
 import ThemeWrapper from "../components/ThemeWrapper";
 import { useUserStore } from "../store/userStore";
+import { useEffect } from "react";
+import UserHydration from "@/components/UserHydration";
 
 export default function RootLayout({
   children,
@@ -10,6 +12,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const { darkMode } = useUserStore();
+  const { setLoggedInUser } = useUserStore()
+  useEffect(() => {
+    const savedUser = localStorage.getItem('loggedInUser')
+    if (savedUser) {
+      setLoggedInUser(JSON.parse(savedUser))
+    }
+  }, [setLoggedInUser])
   return (
     <html lang="en">
       <head>
@@ -22,6 +31,7 @@ export default function RootLayout({
         <body
           className={`bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white`}
         >
+          <UserHydration />
           <ThemeWrapper>{children}</ThemeWrapper>
         </body>
       </QueryProvider>
